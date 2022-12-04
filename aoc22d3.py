@@ -23,19 +23,12 @@ def priority(item: str) -> int:
         return ord(item.swapcase()) - 64
 
 
-# print(find_shared_items(a))
-# print(find_shared_items(b))
-# print(find_shared_items(e))
-# print(find_shared_items(d))
-# print(find_shared_items(e))
-# print(find_shared_items(f))
-
-
 def solve1(rucksacks: list[str]) -> int:
     total_priority = 0
     for rucksack in rucksacks:
         total_priority += priority(find_shared_items(rucksack))
     return total_priority
+
 
 def solve2(rucksacks: list[str]) -> int:
     total_priority = 0
@@ -60,4 +53,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
