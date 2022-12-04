@@ -7,9 +7,8 @@ def subset(a: set, b: set) -> bool:
         return False
 
 
-
 def solve1(section_assignment_pairs: list[str]) -> int:
-    count = 0 # assignment pairs ranges that fully contain the other
+    count = 0  # assignment pairs ranges that fully contain the other
     for pair in section_assignment_pairs:
         first, second = pair.split(",")
         first_start, first_end = tuple(int(x) for x in first.split("-"))
@@ -19,8 +18,6 @@ def solve1(section_assignment_pairs: list[str]) -> int:
         if subset(first_set, second_set):
             count += 1
     return count
-
-
 
 
 def main() -> None:
