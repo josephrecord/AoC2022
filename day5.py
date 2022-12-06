@@ -59,6 +59,6 @@ with open("input5.txt") as f:
 
 ans = ""
 for key, val in sorted(remapped_dict.items()):
-    ans += remapped_dict[key][-1]
+    ans += remapped_dict[key][-1]  # Only care about the top crate on the stack
 
 print(ans)
