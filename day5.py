@@ -43,7 +43,6 @@ remapped_dict = {
     key_map[key]: list(reversed(value)) for key, value in crate_dict.items()
 }
 
-# print(remapped_dict)
 
 with open("input5.txt") as f:
     for line in f:
@@ -51,7 +50,6 @@ with open("input5.txt") as f:
             n, from_stack, to_stack = tuple(int(x) for x in re.findall(r"\d+", line))
             remapped_dict = move2(n, from_stack, to_stack, remapped_dict)
 
-# print(remapped_dict)
 
 ans = ""
 for key, val in sorted(remapped_dict.items()):
