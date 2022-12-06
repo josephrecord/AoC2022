@@ -4,6 +4,7 @@ from collections import defaultdict
 
 
 def move(n: int, from_key: int, to_key: int, d: dict) -> dict:
+    """Move one crate at a time"""
     for _ in range(n):
         moving_crate = d[from_key].pop()
         d[to_key].append(moving_crate)
@@ -11,14 +12,12 @@ def move(n: int, from_key: int, to_key: int, d: dict) -> dict:
 
 
 def move2(n: int, from_key: int, to_key: int, d: dict) -> dict:
-    print(d)
+    """Move `n` crates at a time"""
     moving_crates = []
     for _ in range(n):
         moving_crates.append(d[from_key].pop())
-    moving_crates = list(reversed(moving_crates))
-    for crate in moving_crates:
+    for crate in reversed(moving_crates):
         d[to_key].append(crate)
-    print(d)
     return d
 
 
