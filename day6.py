@@ -32,7 +32,7 @@ for window in packet_windows:
     start_of_packet += 1
 
 for window in message_windows:
-    if len(set(window)) == 14:  # Four unique characters
+    if len(set(window)) == 14:  # 14 unique characters
         break
     start_of_message += 1
 
