@@ -18,11 +18,24 @@ with open("input6.txt") as f:
     code = f.readline().strip()
 
 
-windows = sliding_window(code, 4)
 
-i = 4
-for window in windows:
-    if len(window) == len(set(window)):
-        print(i)
+
+start_of_packet = 4
+start_of_message = 14
+
+packet_windows = sliding_window(code, 4)
+message_windows = sliding_window(code, 14)
+
+for window in packet_windows:
+    if len(set(window)) == 4:  # Four unique characters
         break
-    i += 1
+    start_of_packet += 1
+
+for window in message_windows:
+    if len(set(window)) == 14:  # Four unique characters
+        break
+    start_of_message += 1
+
+
+print(start_of_packet)
+print(start_of_message)
