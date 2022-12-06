@@ -7,6 +7,7 @@ def move(n: int, from_key: int, to_key: int, d: dict) -> dict:
     for _ in range(n):
         moving_crate = d[from_key].pop()
         d[to_key].append(moving_crate)
+    return d
 
 
 
@@ -30,4 +31,20 @@ for n, key in enumerate(sorted(crate_dict.keys()), start=1):
 # Do the actual re-mapping and reverse the crate ordering 
 remapped_dict = {key_map[key]: list(reversed(value)) for key, value in crate_dict.items()}
 
+# print(remapped_dict)
+
+with open("input5.txt") as f:
+    for line in f:
+        if 'move' in line:
+            n, from_stack, to_stack = tuple(int(x) for x in re.findall(r"\d+", line))
+            print(n, from_stack, to_stack)
+            remapped_dict = move(n, from_stack, to_stack, remapped_dict)
+
+# print(remapped_dict)
+
+ans = ""
+for key, val in sorted(remapped_dict.items()):
+    ans += remapped_dict[key][-1]
+
+print(ans)
 
