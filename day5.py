@@ -10,12 +10,23 @@ def move(n: int, from_key: int, to_key: int, d: dict) -> dict:
     return d
 
 
+def move2(n: int, from_key: int, to_key: int, d: dict) -> dict:
+    print(d)
+    moving_crates = []
+    for _ in range(n):
+        moving_crates.append(d[from_key].pop())
+    moving_crates = list(reversed(moving_crates))
+    for crate in moving_crates:
+        d[to_key].append(crate)
+    print(d)
+    return d
+
 
 crate_dict = defaultdict(list)
 
 with open("input5.txt") as f:
     for line_no, line in enumerate(f):
-        if '[' in line:
+        if "[" in line:
             crates = re.finditer(r"(?<=\[)[A-Z](?=\])", line)
             for crate in crates:
                 col = crate.start()
@@ -28,17 +39,18 @@ with open("input5.txt") as f:
 key_map: dict[int, int] = {}
 for n, key in enumerate(sorted(crate_dict.keys()), start=1):
     key_map[key] = n
-# Do the actual re-mapping and reverse the crate ordering 
-remapped_dict = {key_map[key]: list(reversed(value)) for key, value in crate_dict.items()}
+# Do the actual re-mapping and reverse the crate ordering
+remapped_dict = {
+    key_map[key]: list(reversed(value)) for key, value in crate_dict.items()
+}
 
 # print(remapped_dict)
 
 with open("input5.txt") as f:
     for line in f:
-        if 'move' in line:
+        if "move" in line:
             n, from_stack, to_stack = tuple(int(x) for x in re.findall(r"\d+", line))
-            print(n, from_stack, to_stack)
-            remapped_dict = move(n, from_stack, to_stack, remapped_dict)
+            remapped_dict = move2(n, from_stack, to_stack, remapped_dict)
 
 # print(remapped_dict)
 
@@ -47,4 +59,3 @@ for key, val in sorted(remapped_dict.items()):
     ans += remapped_dict[key][-1]
 
 print(ans)
-
