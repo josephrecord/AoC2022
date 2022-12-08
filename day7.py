@@ -1,12 +1,18 @@
 from collections import defaultdict
 
+class Tree:
+    def __init__(self) -> None:
+        self.nodes = None
+    
+    def prune(self, dir_name: str):
+        pass
 
-def get_all_subdirs(dir, tree):
-    subdirs = tree[dir]
-    if not subdirs:
-        return None
-    else:
-        return get_all_subdirs(tree[dir])
+
+class Node:
+    def __init__(self, name) -> None:
+        self.name = name
+        self.children = []
+        self.parent = None
 
 
 cmd_output = []
@@ -14,6 +20,7 @@ dirs = defaultdict(list)
 direct_size = defaultdict(int)
 depths = defaultdict(set)
 parents = {}
+dirset = set()
 
 with open("input7test.txt") as f:
     for line in f:
@@ -29,6 +36,7 @@ with open("input7test.txt") as f:
                 arg = args[0]
                 # print(f"{cmd} {arg}")
                 if arg == "/":
+                    dirset.add(arg)
                     stack = ["/"]
                     depth = 0
                     parents[stack[-1]] = None
@@ -38,6 +46,7 @@ with open("input7test.txt") as f:
                     depth -= 1
                 else:
                     # move down to child dir
+                    dirset.add(arg)
                     parents[arg] = stack[-1] # we learn info on current dir's parent only when we go down a level
                     stack.append(arg)
                     depth += 1
@@ -68,21 +77,44 @@ sizes = {}
 
 full_depth = len(dirs['/'])
 
+# print(dirset)
 
 # Go to all leaves of tree
 # Since leaf has no subdirs, leaf size = direct size
 # Now treat leaf as file of parent dir
 
-for dir in direct_size.keys():  # For each dir that we saw...
-    if dir not in dirs.keys():  # ... if that dir has no childen...
-        sizes[dir] = direct_size[dir]  # ...its true size is its direct size
-        # That dir can now be treated as a file.
-        # Find the parent of that dir, remove the dir from the list
-        # of children and increase the parent's direct size by 
-        # the direct size of dir
-        parent = parents[dir]
-        print(f"dir: {dir},    parent: {parent}")
-        # print(dirs)
-        # print(dirs[parent])
-        direct_size[parent] += direct_size[dir]
-        dirs[parent].remove(dir)
+# print(depths)
+
+# print(depths[full_depth])
+
+for d in dirset:
+    print(d)
+    while parents[d]:
+        d = parents[d]
+        print(d)
+
+# print(parents)
+
+# for dir, subdirs in dirs.items():
+#     for subdir in subdirs:
+#         if len(dirs[subdir]) != 0:
+#             # subdir has children
+#             return get_children(dirs[child])
+#         else:
+#             # subdir has no children
+#             # check next subdir
+#             pass
+
+# for dir in direct_size.keys():  # For each dir that we saw...
+#     print(dir)
+#     if len(dirs[dir]) == 0:  # ... if that dir has no childen...
+#         sizes[dir] = direct_size[dir]  # ...its true size is its direct size
+#         # That dir can now be treated as a file.
+#         # Find the parent of that dir, remove the dir from the list
+#         # of children and increase the parent's direct size by 
+#         # the direct size of dir
+#         parent = parents[dir]
+#         print(f"dir: {dir},  parent: {parent}, dirs: {dirs}")
+#         direct_size[parent] += direct_size[dir]
+#         dirs[parent].remove(dir)
+#         # print(dirs)
