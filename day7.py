@@ -1,4 +1,15 @@
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Union
+
+
+@dataclass
+class Dir:
+    depth: int
+    name: str
+    size: int = 0
+    parent: "Dir" = None
+    children: list["Dir"] = []
 
 
 cmd_output = []
@@ -9,14 +20,26 @@ parent = {} # key's parent is value
 dirset = set()
 filesize = 0
 
+
+def get_dir(depth: int, name: str) -> Union[Dir,None]:
+    """If name and depth exist in dirset, the directory exists,
+    so return it. If it doesn't exist, return a new Dir
+    defined by the depth and name"""
+    for dir in dirset:
+        if dir.name == name and dir.depth == depth:
+            return dir
+    else:
+        return Dir(depth, name)
+
+
 with open("input7.txt") as f:
     for line in f:
         line = line.strip()
         # print(f"raw: {line}")
         if line.startswith("$"):
-            if cmd_output:
-                # print(f"ls: {cmd_output}")
-                pass
+            # if cmd_output:
+            #     print(f"ls: {cmd_output}")
+            #     pass
             cmd_output = [] # New command, clear previous output
             # Command
             _, cmd, *args = line.split()
@@ -25,39 +48,52 @@ with open("input7.txt") as f:
                 # print(f"{cmd} {arg}")
                 if arg == "/":
                     depth = 0
-                    # print("cd /")
+                    print("cd /")
                     dir = (0, '/')
                     stack = [dir]
-                    dirset.add(dir)
                     parent[dir] = None
+                    dirset.add(dir)
                 elif arg == "..":
                     depth -= 1
-                    # print("cd ..")
+                    print("cd ..")
                     # move up to parent dir
                     stack.pop()
                 else:
                     # move down to child dir
                     depth += 1
-                    # print(f"cd {arg}")
+                    print(f"cd {arg}")
                     dir = (depth, arg)
                     parent[dir] = stack[-1] # we learn info on current dir's parent only when we go down a level
                     stack.append(dir)
                     dirset.add(dir)
-                # print(f"Current dir: {stack[-1]}")
+                print(f"Current dir: {stack[-1]}")
                 depths[depth].add(stack[-1])
+                print(f"stack: {stack}")
             else:
                 # Only two commands so will print ls
-                # print(cmd)
-                pass
+                print(cmd)
         else:
             # Output from a previous command
-            cmd_output.append(line.split())
+            # cmd_output.append(line.split())
             field1, field2 = line.split()
             if field1 == "dir":
-                dirs[stack[-1]].append((depth + 1, field2))
+                # directory
+                subdir = (depth + 1, field2)
+                print(" |")
+                print(f" ---> {subdir}")
+                parent[subdir] = stack[-1] # parent of the subdir is the current dir
+                print(f"   parent: {stack[-1]}")
+                print(f"    parents: {parent}")
+                dirs[stack[-1]].append(subdir)
+                print(f"    dirs: {dirs}")
             else:
+                # file
+                print(" |")
+                print(f" ---> {field2}: size {field1}")
                 filesize += int(field1)
+                print(f"   size: {size[stack[-1]]} + {int(field1)}")
                 size[stack[-1]] += int(field1)
+               
 
 
 # `direct_size` contains directory names as keys and the sum of the size
