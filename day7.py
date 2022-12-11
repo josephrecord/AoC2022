@@ -19,6 +19,7 @@ class File:
 root = Dir(0, '/', None)
 
 size = defaultdict(int)
+total_size = {}
 files = defaultdict(set)
 ls = defaultdict(int)    # num times ls run in dir (to prevent overcounting)
 ls2 = defaultdict(int)    # num times ls run in dir (to prevent overcounting)
@@ -65,8 +66,12 @@ for line in lines:
                 print(f"ls'ed again: {current_dir}")
                
 
-ans = 0
+ans1 = 0
 threshold = 100000
+total_diskspace = 70000000 # total disk space available to the filesystem
+needed_free_space = 30000000
+
+# find a directory you can delete that will free up enough space to run the update
 
 fileless_dirs = 0
 for dir in dirset:
@@ -77,24 +82,30 @@ assert len(size) + fileless_dirs == len(dirset)
 
 
 for dir in list(sorted(dirset, reverse=True)):
+    cur_size = size[dir]
+    total_size[dir] = cur_size
+    if cur_size <= threshold:
+        ans1 += size[dir]
     if dir is not root:
-        print(dir.depth, dir.name, size[dir], dir.parent.depth, dir.parent.name, size[dir.parent])
-        if size[dir] > threshold:
-            print(f"{dir.name}:  {size[dir]} > {threshold} --> ignore")
-            pass
-        else:
-            print(f"{dir.name}:  {size[dir]} <= {threshold} --> include")
-            print(f"total is {ans} + {size[dir]} = {ans+size[dir]}")
-            ans += size[dir]
         size[dir.parent] += size[dir]
-        size[dir] = 0
-        print(dir.depth, dir.name, size[dir], dir.parent.depth, dir.parent.name, size[dir.parent])
-    else:
-        # dir is root
-        if size[root] <= threshold:
-            ans += size[root]
 
-print(ans)
+print(ans1)
+
+# Get the actual free space
+free_space = total_diskspace - size[root]
+
+# Find how much space needs to be freed
+to_be_freed = needed_free_space - free_space
+
+dirs_to_del = []
+for dir in total_size:
+    if total_size[dir] > to_be_freed:
+        dirs_to_del.append(total_size[dir])
+
+
+ans2 = min(dirs_to_del)
+print(ans2)
+
 
 # correct ans: 1325919
 # last guess: 1260326
